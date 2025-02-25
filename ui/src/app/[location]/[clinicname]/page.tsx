@@ -5,6 +5,9 @@ import Otp from "@/app/components/Otp";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
 import Verification from "@/app/components/Verification";
+import UploadKyc from "@/app/components/UploadKyc";
+import SelectMode from "@/app/components/SelectMode";
+import ChatMode from "@/app/components/ChatMode.";
 
 
 export default function Page() {
@@ -16,13 +19,13 @@ export default function Page() {
     case CurrentPage.VERIFICATION:
       return <React.Fragment><Verification/></React.Fragment>;
     case CurrentPage.UPLOAD_KYC:
-      return <React.Fragment>Upload KYC</React.Fragment>;
+      return <React.Fragment><UploadKyc/></React.Fragment>;
     case CurrentPage.FETCHING:
       return <React.Fragment>Fetching</React.Fragment>;
     case CurrentPage.SELECT_MODE:
-      return <React.Fragment>Select Mode</React.Fragment>;
+      return <React.Fragment><SelectMode/></React.Fragment>;
     case CurrentPage.CHAT_MODE:
-      return <React.Fragment>Chat Mode</React.Fragment>;
+      return <React.Fragment><ChatMode/></React.Fragment>;
     case CurrentPage.FORM_MODE:
       return <React.Fragment>Form Mode</React.Fragment>;
     case CurrentPage.COMPLETE:
