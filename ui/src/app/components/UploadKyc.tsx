@@ -1,37 +1,37 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import axios from "axios";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { backendUrl } from '../constants/creds';
 
 export default function UploadKyc() {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documentName, setDocumentName] = useState<string>("");
+  const [documentName, setDocumentName] = useState<string>('');
 
   async function FetchDetails() {
     if (!selectedFile || !documentName) {
-      alert("Please select a document name and file.");
+      alert('Please select a document name and file.');
       return;
     }
 
     const formData = new FormData();
-    formData.append("documentName", documentName);
-    formData.append("file", selectedFile);
+    formData.append('documentName', documentName);
+    formData.append('file', selectedFile);
 
-    dispatch({ type: "pageSelection/setPage", payload: "FETCHING" });
+    dispatch({ type: 'pageSelection/setPage', payload: 'FETCHING' });
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const response = await axios.post(`${backendUrl}/api/upload`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
       console.log(response.data);
       if (response.status === 200) {
-        dispatch({ type: "pageSelection/setPage", payload: "SELECT_MODE" });
+        dispatch({ type: 'pageSelection/setPage', payload: 'SELECT_MODE' });
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error('Error uploading file:', error);
     }
   }
 

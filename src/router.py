@@ -30,13 +30,12 @@ async def upload(documentName: str = Form(...), file: UploadFile = File(...)):
 @router.post("/update-details")
 async def update_user_details(message: UserMessage):
     try:
-
         logging.info(message)
-        response=await AI.extract_details(message.message)
+        response = await AI.extract_details(message.message)
         logging.info(response)
         await database.update(
             "documents",
-            { "pan": response.pan },
+            {"pan": response.pan},
             response.dict(exclude_none=True),
         )
         return {"status": "success", "message": response.model_dump()}
@@ -54,7 +53,8 @@ async def get_user_details(pan: str):
         return data[0]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 @router.post("/confirm-details")
 async def confirm_user_details(user_details: PersonalInfo):
     print(user_details)

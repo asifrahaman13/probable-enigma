@@ -11,7 +11,7 @@ socket_router = APIRouter()
 @socket_router.websocket("/ws/{room_name}")
 async def websocket_endpoint(websocket: WebSocket, room_name: str):
     await websocket_manager.connect(websocket, room_name)
-    logging.info(f"Client connected")
+    logging.info("Client connected")
     data_present = await database.find("doucments", {"pan": room_name})
     ai_instance = AI(
         model="anthropic.claude-3-5-sonnet-20240620-v1:0",

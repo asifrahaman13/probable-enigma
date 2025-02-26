@@ -13,4 +13,6 @@ class MongoDB:
         return await self.db[collection].find(query).to_list(None)
 
     async def update(self, collection: str, query: dict, data: dict, upsert=True):
-        return await self.db[collection].update_one(query, {"$set": data}, upsert=upsert)
+        return await self.db[collection].update_one(
+            query, {"$set": data}, upsert=upsert
+        )

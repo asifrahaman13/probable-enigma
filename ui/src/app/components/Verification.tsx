@@ -1,11 +1,11 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function Verification() {
   const dispath = useDispatch();
 
   async function Verify() {
-    dispath({ type: "pageSelection/setPage", payload: "UPLOAD_KYC" });
+    dispath({ type: 'pageSelection/setPage', payload: 'UPLOAD_KYC' });
   }
 
   return (

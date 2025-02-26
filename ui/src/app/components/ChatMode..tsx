@@ -1,7 +1,8 @@
-"use client";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+'use client';
+import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { backendSocket, backendUrl } from '../constants/creds';
 
 type MessageState = {
   message: string;
@@ -14,18 +15,18 @@ export default function ChatMode() {
   const dispath = useDispatch();
   const wsRef = useRef<WebSocket | null>(null);
   const [messages, setMessages] = useState<MessageState[]>([]);
-  const [userMessage, setUserMessage] = useState<string>("");
+  const [userMessage, setUserMessage] = useState<string>('');
   const [isFinished, setIsFinished] = useState<boolean>(false);
 
   useEffect(() => {
-    const webSocket = new WebSocket("ws://localhost:8000/ws/2280605800");
+    const webSocket = new WebSocket(`${backendSocket}/ws/2280605800`);
 
     wsRef.current = webSocket;
 
-    webSocket.onopen = () => console.log("Connected to WebSocket");
+    webSocket.onopen = () => console.log('Connected to WebSocket');
 
     webSocket.onmessage = (event) => {
-      console.log("Message received:", event.data);
+      console.log('Message received:', event.data);
       try {
         const receivedMessage: MessageState = JSON.parse(event.data);
 
@@ -33,18 +34,18 @@ export default function ChatMode() {
           setIsFinished(true);
         }
         receivedMessage.timestamp = new Date().toLocaleTimeString();
-        receivedMessage.sender = "AI";
+        receivedMessage.sender = 'AI';
 
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
       } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+        console.error('Error parsing WebSocket message:', error);
       }
     };
 
-    webSocket.onerror = (error) => console.error("WebSocket error:", error);
+    webSocket.onerror = (error) => console.error('WebSocket error:', error);
 
     webSocket.onclose = () => {
-      console.log("WebSocket closed");
+      console.log('WebSocket closed');
     };
   }, []);
 
@@ -52,45 +53,41 @@ export default function ChatMode() {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const message: MessageState = {
         message: userMessage,
-        sender: "User",
+        sender: 'User',
         timestamp: new Date().toLocaleTimeString(),
         finished: false,
       };
       wsRef.current.send(JSON.stringify(message));
       setMessages((prevMessages) => [...prevMessages, message]);
-      setUserMessage("");
+      setUserMessage('');
     } else {
       console.error(
-        "WebSocket is not open. ReadyState:",
+        'WebSocket is not open. ReadyState:',
         wsRef.current?.readyState
       );
     }
   };
-
 
   async function dumpResponse() {
     try {
       if (messages === undefined) {
         return;
       }
-      console.log(messages?.at(-1)?.message ?? "");
-      const response = await axios.post(
-        "http://localhost:8000/api/update-details",
-        {
-          message: messages?.at(-1)?.message ?? "",
-        }
-      );
+      console.log(messages?.at(-1)?.message ?? '');
+      const response = await axios.post(`${backendUrl}/api/update-details`, {
+        message: messages?.at(-1)?.message ?? '',
+      });
 
       if (response.status === 200) {
         console.log(response.data.message);
         dispath({
-          type: "detailsSelection/setDetails",
+          type: 'detailsSelection/setDetails',
           payload: response.data.message,
         });
-        dispath({ type: "pageSelection/setPage", payload: "COMPLETE" });
+        dispath({ type: 'pageSelection/setPage', payload: 'COMPLETE' });
       }
     } catch (error) {
-      console.error("Error parsing WebSocket message:", error);
+      console.error('Error parsing WebSocket message:', error);
     }
   }
 
@@ -106,19 +103,19 @@ export default function ChatMode() {
             <div
               key={index}
               className={`p-2 ${
-                msg.sender === "User"
-                  ? "text-blue-600 bg-blue-50 text-end"
-                  : "text-green-600"
+                msg.sender === 'User'
+                  ? 'text-blue-600 bg-blue-50 text-end'
+                  : 'text-green-600'
               }`}
             >
               <strong>{msg.sender}: </strong>
-              {msg.message}{" "}
+              {msg.message}{' '}
               <span className="text-gray-500 text-xs">({msg.timestamp})</span>
             </div>
           ))}
         </div>
 
-        {isFinished? (
+        {isFinished ? (
           <div className="flex w-full gap-2">
             <button
               className="bg-blue-800 text-white w-1/2 text-center rounded-md py-2"

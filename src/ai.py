@@ -106,7 +106,6 @@ class AI:
             ).messages.create(
                 model="anthropic.claude-3-5-sonnet-20240620-v1:0",
                 max_tokens=1000,
-                
                 messages=[
                     {
                         "role": "assistant",

@@ -1,7 +1,7 @@
-"use client";
-import React from "react";
-import { RootState } from "../lib/store";
-import { useSelector } from "react-redux";
+'use client';
+import React from 'react';
+import { RootState } from '../lib/store';
+import { useSelector } from 'react-redux';
 
 export default function Complete() {
   const userDetails = useSelector((state: RootState) => state.detailsSelection);
@@ -13,8 +13,9 @@ export default function Complete() {
         <div>Onboarding complete</div>
         {userDetails && (
           <div className="bg-green-200 w-full lg:w-1/2 lg:p-4 lg:rounded-lg">
-            <b>{userDetails.name}</b> will receive a link on their Whatsapp <b>{userDetails.reference_contact}</b> to complete the registration process.
-            They can complete the further process by using that link
+            <b>{userDetails.name}</b> will receive a link on their Whatsapp{' '}
+            <b>{userDetails.reference_contact}</b> to complete the registration
+            process. They can complete the further process by using that link
           </div>
         )}
       </div>

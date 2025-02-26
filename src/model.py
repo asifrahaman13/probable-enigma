@@ -59,11 +59,7 @@ class PersonalInfo(BaseModel):
         examples="B.Tech",
         description="Education Qualification",
     )
-    married: Optional[str] = Field(
-        None,
-        description="Marital Status of the person"
-    )
-
+    married: Optional[str] = Field(None, description="Marital Status of the person")
 
 
 class AIResponse(BaseModel):

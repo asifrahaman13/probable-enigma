@@ -1,4 +1,4 @@
-from .ai import  OCR
+from .ai import OCR
 from dotenv import load_dotenv
 import os
 from .database import MongoDB

@@ -1,11 +1,11 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function Otp() {
   const dispath = useDispatch();
 
   async function SendOtp() {
-    dispath({ type: "pageSelection/setPage", payload: "VERIFICATION" });
+    dispath({ type: 'pageSelection/setPage', payload: 'VERIFICATION' });
   }
   return (
     <React.Fragment>

@@ -1,11 +1,11 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function SelectMode() {
   const dispath = useDispatch();
 
   async function selectMode(mode: string) {
-    dispath({ type: "pageSelection/setPage", payload: mode });
+    dispath({ type: 'pageSelection/setPage', payload: mode });
   }
 
   return (
@@ -26,7 +26,7 @@ export default function SelectMode() {
             <button
               className="bg-gray-200  text-black font-bold py-2 px-4 rounded"
               onClick={() => {
-                selectMode("CHAT_MODE");
+                selectMode('CHAT_MODE');
               }}
             >
               Chat mode
@@ -34,7 +34,7 @@ export default function SelectMode() {
             <button
               className="bg-gray-200 text-black font-bold py-2 px-4 rounded"
               onClick={() => {
-                selectMode("FORM_MODE");
+                selectMode('FORM_MODE');
               }}
             >
               Form mode

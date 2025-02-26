@@ -1,9 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const pageSelectionSlice = createSlice({
-  name: "pageSelection",
+  name: 'pageSelection',
   initialState: {
-    pageSelected: "SELECT_MODE",
+    pageSelected: 'OTP',
   },
   reducers: {
     setPage: (state, action: PayloadAction<string>) => {
