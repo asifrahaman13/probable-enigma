@@ -8,6 +8,8 @@ import Verification from "@/app/components/Verification";
 import UploadKyc from "@/app/components/UploadKyc";
 import SelectMode from "@/app/components/SelectMode";
 import ChatMode from "@/app/components/ChatMode.";
+import Complete from "@/app/components/Complete";
+import FormMode from "@/app/components/FormMode";
 
 
 export default function Page() {
@@ -27,9 +29,9 @@ export default function Page() {
     case CurrentPage.CHAT_MODE:
       return <React.Fragment><ChatMode/></React.Fragment>;
     case CurrentPage.FORM_MODE:
-      return <React.Fragment>Form Mode</React.Fragment>;
+      return <React.Fragment><FormMode/></React.Fragment>;
     case CurrentPage.COMPLETE:
-      return <React.Fragment>Complete</React.Fragment>;
+      return <React.Fragment><Complete/></React.Fragment>;
     default:
       return <React.Fragment>Default Page</React.Fragment>;
   }

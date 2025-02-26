@@ -1,11 +1,9 @@
-import logging
 from fastapi import WebSocket
 import redis
 
 
 class ConnectionManager:
     def __init__(self, redis_host, redis_port):
-
         self.redis_client = redis.Redis(host=redis_host, port=redis_port)
         self.active_connections = {}
 
@@ -15,7 +13,6 @@ class ConnectionManager:
         connection_id: str,
         connection_type: str = "active_connections",
     ):
-
         self.redis_client.sadd(connection_type, connection_id)
         self.active_connections[connection_id] = websocket
         await websocket.accept()
@@ -43,13 +40,3 @@ class ConnectionManager:
             if stored_websocket == websocket:
                 return connection_id
         return None
-
-REDIS_PORT= "6379"
-assert REDIS_PORT, "Redis port is not set."
-logging.info("Redis port is set")
-
-REDIS_HOST = "localhost"
-assert REDIS_HOST, "Redis host is not set."
-logging.info("Redis host is set")
-
-websocket_manager = ConnectionManager(REDIS_HOST, REDIS_PORT)

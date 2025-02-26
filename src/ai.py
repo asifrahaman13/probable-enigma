@@ -86,14 +86,6 @@ class AI:
 
     async def get_response(self) -> Awaitable[str]:
         try:
-            # response = await self.async_client.messages.create(
-            #     model=self.model,
-            #     max_tokens=self.max_tokens,
-            #     messages=self.messages,
-            # )
-            # logging.info(f"Response from the bedrock API: {response}")
-            # return response.content[0].text
-
             response = await self.async_client.messages.create(
                 model=self.model,
                 max_tokens=self.max_tokens,
@@ -103,5 +95,37 @@ class AI:
 
             logging.info(f"Response from the bedrock API: {response}")
             return response.message, response.finished
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    async def extract_details(message: str) -> Awaitable[PersonalInfo]:
+        try:
+            response = await instructor.from_anthropic(
+                AsyncAnthropicBedrock()
+            ).messages.create(
+                model="anthropic.claude-3-5-sonnet-20240620-v1:0",
+                max_tokens=1000,
+                
+                messages=[
+                    {
+                        "role": "assistant",
+                        "content": """Your job is to extract out the deetails fromt the information provided by the user. Extract the following information and only give the json 
+                        response: 
+                        - pan
+                        - name
+                        - date_of_birth
+                        - gender
+                        - email_id
+                        - reference_contact
+                        
+                        """,
+                    },
+                    {"role": "user", "content": message},
+                ],
+                response_model=PersonalInfo,
+            )
+            logging.info(f"Response from the bedrock API: {response}")
+            return response
         except Exception as e:
             raise e

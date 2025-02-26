@@ -3,8 +3,7 @@ import logging
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter
 from .ai import AI
-from .instances import database
-from .connection import websocket_manager
+from .instances import database, websocket_manager
 
 socket_router = APIRouter()
 
@@ -26,7 +25,9 @@ async def websocket_endpoint(websocket: WebSocket, room_name: str):
             message, finished = await ai_instance.get_response()
             ai_instance.messages.append({"role": "assistant", "content": message})
             await asyncio.sleep(0)
-            await websocket_manager.send_personal_message({"message": message, "finished": finished}, websocket)
+            await websocket_manager.send_personal_message(
+                {"message": message, "finished": finished}, websocket
+            )
     except WebSocketDisconnect:
         logging.info(f"Client disconnected from room {room_name}")
         await websocket_manager.disconnect(websocket)
