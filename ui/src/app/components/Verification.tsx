@@ -1,11 +1,28 @@
+'use client';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { backendUrl } from '../constants/creds';
+import axios from 'axios';
+import { RootState } from '../lib/store';
 
 export default function Verification() {
   const dispath = useDispatch();
+  const otp = useSelector((state: RootState) => state.otpSelection);
 
   async function Verify() {
-    dispath({ type: 'pageSelection/setPage', payload: 'UPLOAD_KYC' });
+    try {
+      console.log(otp);
+      const response = await axios.post(`${backendUrl}/api/verify-otp`, {
+        phone_number: otp.phone_number,
+        otp: otp.otp,
+      });
+      if (response.status === 200) {
+        console.log('OTP verified successfully');
+        dispath({ type: 'pageSelection/setPage', payload: 'UPLOAD_KYC' });
+      }
+    } catch {
+      console.log('Error in verifying OTP');
+    }
   }
 
   return (
@@ -35,6 +52,13 @@ export default function Verification() {
               id="hs-lastname-contacts-1"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 placeholder:text-center"
               placeholder="_"
+              value={otp.otp}
+              onChange={(e) =>
+                dispath({
+                  type: 'otpSelection/setOTP',
+                  payload: { otp: e.target.value },
+                })
+              }
             />
           </div>
           <div className="mt-6 grid">

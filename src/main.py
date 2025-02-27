@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from src.router import router
-from src.socket import socket_router
+from src.websocket import socket_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 

@@ -18,7 +18,6 @@ export default function FormMode() {
           `${backendUrl}/api/get-details/2280605800`
         );
         console.log(response.data);
-
         if (response.status === 200) {
           setUserDetails(response.data);
         }

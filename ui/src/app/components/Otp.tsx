@@ -1,12 +1,33 @@
+'use client';
+import axios from 'axios';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { backendUrl } from '../constants/creds';
+import { RootState } from '../lib/store';
 
 export default function Otp() {
   const dispath = useDispatch();
+  const otp = useSelector((state: RootState) => state.otpSelection);
 
   async function SendOtp() {
-    dispath({ type: 'pageSelection/setPage', payload: 'VERIFICATION' });
+    try {
+      const response = await axios.get(
+        `${backendUrl}/api/send-otp/${otp.phone_number}`
+      );
+
+      if (response.status === 200) {
+        console.log('OTP sent successfully');
+        dispath({ type: 'pageSelection/setPage', payload: 'VERIFICATION' });
+      }
+    } catch {
+      console.log('Error in sending OTP');
+    }
   }
+
+  function setMobileNumber(arg0: string) {
+    dispath({ type: 'otpSelection/setOTP', payload: { phone_number: arg0 } });
+  }
+
   return (
     <React.Fragment>
       <div className=" flex flex-col justify-center h-screen items-center">
@@ -84,6 +105,8 @@ export default function Otp() {
               id="hs-lastname-contacts-1"
               className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
               placeholder="Enter your mobile number"
+              value={otp.phone_number}
+              onChange={(e) => setMobileNumber(e.target.value)}
             />
           </div>
           <div className="mt-6 grid">

@@ -1,14 +1,55 @@
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 import base64
-from .instances import ocr, database
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi.responses import JSONResponse
+from .instances import ocr, database, twilio
 from .ai import AI
 import logging
-from .model import UserMessage, PersonalInfo
+from .model import UserMessage, PersonalInfo, OTP
+from .helper import generate_6_digit_code
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 
 router = APIRouter()
+
+
+@router.get("/send-otp/{phone_number}")
+async def send_otp(phone_number: str):
+    try:
+        otp = generate_6_digit_code()
+
+        await database.insert(
+            "otp", {"phone_number": phone_number, "otp": otp, "verified": False}
+        )
+        response = twilio.send_message(phone_number, otp)
+        if response is True:
+            return JSONResponse(
+                {"status": "success", "message": "OTP sent successfully"}
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Failed to send OTP")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/verify-otp")
+async def verify_otp(otp: OTP):
+    try:
+        data = await database.find(
+            "otp", {"phone_number": otp.phone_number, "otp": otp.otp}
+        )
+        if len(data) == 0:
+            raise HTTPException(status_code=400, detail="Invalid OTP")
+        await database.update(
+            "otp",
+            {"phone_number": otp.phone_number, "otp": otp.otp},
+            {"verified": True},
+        )
+        return JSONResponse(
+            {"status": "success", "message": "OTP verified successfully"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/upload")
@@ -22,7 +63,7 @@ async def upload(documentName: str = Form(...), file: UploadFile = File(...)):
         await database.insert(
             "documents", {"documentName": documentName, **extracted_information}
         )
-        return {"documentName": documentName, **extracted_information}
+        return JSONResponse({"documentName": documentName, **extracted_information})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -38,7 +79,7 @@ async def update_user_details(message: UserMessage):
             {"pan": response.pan},
             response.dict(exclude_none=True),
         )
-        return {"status": "success", "message": response.model_dump()}
+        return JSONResponse({"status": "success", "message": response.model_dump()})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -64,6 +105,8 @@ async def confirm_user_details(user_details: PersonalInfo):
             {"pan": user_details.pan},
             user_details.model_dump(),
         )
-        return {"status": "success", "message": "Details verified successfully"}
+        return JSONResponse(
+            {"status": "success", "message": "Details verified successfully"}
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

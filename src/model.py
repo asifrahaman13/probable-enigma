@@ -71,3 +71,16 @@ class AIResponse(BaseModel):
 
 class UserMessage(BaseModel):
     message: str = Field(..., description="Message from the user")
+
+
+class OTP(BaseModel):
+    phone_number: str = Field(
+        ...,
+        min_length=10,
+        max_length=14,
+        examples="9876543210",
+        description="Phone Number",
+    )
+    otp: str = Field(
+        ..., min_length=4, max_length=6, examples="1234", description="OTP"
+    )

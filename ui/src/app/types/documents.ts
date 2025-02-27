@@ -10,3 +10,10 @@ export type UserDocument = {
   education: string;
   married: string;
 };
+
+export type MessageState = {
+  message: string;
+  sender: string;
+  timestamp: string;
+  finished: boolean;
+};
