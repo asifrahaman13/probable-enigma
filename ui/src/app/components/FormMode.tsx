@@ -3,19 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { backendUrl } from '../constants/creds';
-
-type UserDocument = {
-  _id: string;
-  mobile_number?: string;
-  pan: string;
-  name: string;
-  date_of_birth: string;
-  gender: string;
-  email_id: string;
-  reference_contact: string;
-  education: string;
-  married: string;
-};
+import { UserDocument } from '../types/documents';
 
 export default function FormMode() {
   const dispath = useDispatch();
