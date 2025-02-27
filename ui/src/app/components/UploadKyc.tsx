@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
-import { backendUrl } from '../constants/creds';
+import { backendUrl } from '../../constants/creds';
 
 export default function UploadKyc() {
   const dispatch = useDispatch();

@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { CurrentPage } from '@/app/constants/enums';
+import { CurrentPage } from '../../../constants/enums';
 import Otp from '@/app/components/Otp';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/app/lib/store';
+import { RootState } from '@/lib/store';
 import Verification from '@/app/components/Verification';
 import UploadKyc from '@/app/components/UploadKyc';
 import SelectMode from '@/app/components/SelectMode';

@@ -2,8 +2,8 @@
 import axios from 'axios';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { backendUrl } from '../constants/creds';
-import { UserDocument } from '../types/documents';
+import { backendUrl } from '../../constants/creds';
+import { UserDocument } from '../../types/documents';
 
 export default function FormMode() {
   const dispath = useDispatch();

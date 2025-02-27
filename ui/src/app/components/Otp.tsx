@@ -2,8 +2,8 @@
 import axios from 'axios';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { backendUrl } from '../constants/creds';
-import { RootState } from '../lib/store';
+import { backendUrl } from '../../constants/creds';
+import { RootState } from '../../lib/store';
 
 export default function Otp() {
   const dispath = useDispatch();

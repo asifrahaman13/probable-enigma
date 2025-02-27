@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { backendUrl } from '../constants/creds';
+import { backendUrl } from '../../constants/creds';
 import axios from 'axios';
-import { RootState } from '../lib/store';
+import { RootState } from '../../lib/store';
 
 export default function Verification() {
   const dispath = useDispatch();

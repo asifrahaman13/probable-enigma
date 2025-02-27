@@ -2,8 +2,8 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { backendSocket, backendUrl } from '../constants/creds';
-import { MessageState } from '../types/documents';
+import { backendSocket, backendUrl } from '../../constants/creds';
+import { MessageState } from '../../types/documents';
 
 export default function ChatMode() {
   const dispath = useDispatch();
