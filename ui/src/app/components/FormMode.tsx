@@ -21,8 +21,8 @@ export default function FormMode() {
         if (response.status === 200) {
           setUserDetails(response.data);
         }
-      } catch (e) {
-        console.log(e);
+      } catch {
+        console.log("Couldn't fetch details");
       }
     }
 
@@ -55,7 +55,6 @@ export default function FormMode() {
         userDetails
       );
       if (response.status === 200) {
-        console.log(response.data);
         dispath({ type: 'pageSelection/setPage', payload: 'COMPLETE' });
       }
     } catch {
