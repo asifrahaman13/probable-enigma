@@ -53,30 +53,39 @@ async def verify_otp(otp: OTP):
 
 
 @router.post("/upload")
-async def upload(documentName: str = Form(...), file: UploadFile = File(...)):
+async def upload(
+    mobile_number: str = Form(...),
+    documentName: str = Form(...),
+    file: UploadFile = File(...),
+):
     try:
         file_content = await file.read()
         encoded_file = base64.b64encode(file_content).decode("utf-8")
         extracted_information = await ocr.ocr_image(encoded_file)
+        extracted_information["mobile_number"] = mobile_number
 
         logging.info(extracted_information)
-        await database.insert(
+        response = await database.insert(
             "documents", {"documentName": documentName, **extracted_information}
         )
+
+        if response is None:
+            raise HTTPException(status_code=500, detail="Failed to save document")
+
         return JSONResponse({"documentName": documentName, **extracted_information})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/update-details")
-async def update_user_details(message: UserMessage):
+@router.post("/update-details/{mobile_number}")
+async def update_user_details(mobile_number: str, message: UserMessage):
     try:
         logging.info(message)
         response = await AI.extract_details(message.message)
         logging.info(response)
         await database.update(
             "documents",
-            {"pan": response.pan},
+            {"mobile_number": mobile_number},
             response.dict(exclude_none=True),
         )
         return JSONResponse({"status": "success", "message": response.model_dump()})
@@ -84,10 +93,10 @@ async def update_user_details(message: UserMessage):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/get-details/{pan}")
-async def get_user_details(pan: str):
+@router.get("/get-details/{mobile_number}")
+async def get_user_details(mobile_number: str):
     try:
-        data = await database.find("documents", {"pan": pan})
+        data = await database.find("documents", {"mobile_number": mobile_number})
         for document in data:
             document["_id"] = str(document["_id"])
 
@@ -98,15 +107,26 @@ async def get_user_details(pan: str):
 
 @router.post("/confirm-details")
 async def confirm_user_details(user_details: PersonalInfo):
-    print(user_details)
     try:
         await database.update(
             "documents",
-            {"pan": user_details.pan},
+            {"mobile_number": user_details.mobile_number},
             user_details.model_dump(),
         )
         return JSONResponse(
             {"status": "success", "message": "Details verified successfully"}
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/confirmed-details/{mobile_number}")
+async def get_confirmed_user_details(mobile_number: str):
+    try:
+        data = await database.find("documents", {"mobile_number": mobile_number})
+        for document in data:
+            document["_id"] = str(document["_id"])
+
+        return data[0]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,9 +1,10 @@
 'use client';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { backendSocket, backendUrl } from '../../constants/creds';
 import { MessageState } from '../../types/documents';
+import { RootState } from '@/lib/store';
 
 export default function ChatMode() {
   const dispath = useDispatch();
@@ -12,8 +13,10 @@ export default function ChatMode() {
   const [userMessage, setUserMessage] = useState<string>('');
   const [isFinished, setIsFinished] = useState<boolean>(false);
 
+  const otp = useSelector((state: RootState) => state.otpSelection);
+
   useEffect(() => {
-    const webSocket = new WebSocket(`${backendSocket}/ws/2280605800`);
+    const webSocket = new WebSocket(`${backendSocket}/ws/${otp.phone_number}`);
 
     wsRef.current = webSocket;
 
@@ -41,7 +44,7 @@ export default function ChatMode() {
     webSocket.onclose = () => {
       console.log('WebSocket closed');
     };
-  }, []);
+  }, [otp.phone_number]);
 
   const sendMessage = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -67,10 +70,12 @@ export default function ChatMode() {
       if (messages === undefined) {
         return;
       }
-      console.log(messages?.at(-1)?.message ?? '');
-      const response = await axios.post(`${backendUrl}/api/update-details`, {
-        message: messages?.at(-1)?.message ?? '',
-      });
+      const response = await axios.post(
+        `${backendUrl}/api/update-details/${otp.phone_number}`,
+        {
+          message: messages?.at(-1)?.message ?? '',
+        }
+      );
 
       if (response.status === 200) {
         console.log(response.data.message);

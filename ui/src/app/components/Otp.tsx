@@ -38,7 +38,8 @@ export default function Otp() {
           <div>
             <a
               className="group flex flex-col justify-center hover:bg-gray-50 focus:outline-none focus:bg-gray-50 rounded-xl p-4 md:p"
-              href="#"
+              href="https://www.carepay.com"
+              target="_blank"
             >
               <div className="flex justify-center items-center size-12 bg-blue-600 rounded-xl">
                 <svg
@@ -64,7 +65,7 @@ export default function Otp() {
                   Welcome to
                 </h3>
                 <p className="mt-1 text-gray-600 dark:text-neutral-400">
-                  Components are easily customized and extendable
+                  Get the best healthcare services at your fingertips.
                 </p>
                 <span className="mt-2 inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 group-hover:underline group-focus:underline font-medium">
                   Learn more

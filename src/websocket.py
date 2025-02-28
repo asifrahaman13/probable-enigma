@@ -13,11 +13,11 @@ socket_router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket, room_name: str):
     await websocket_manager.connect(websocket, room_name)
     logging.info("Client connected")
-    data_present = await database.find("doucments", {"pan": room_name})
+    data_present = await database.find("doucments", {"mobile_number": room_name})
     ai_instance = AI(
         model=anthropic_model,
         max_tokens=1000,
-        already_present=data_present,
+        already_present=str(data_present),
     )
     try:
         while True:

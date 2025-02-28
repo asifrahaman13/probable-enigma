@@ -10,6 +10,7 @@ import SelectMode from '@/app/components/SelectMode';
 import ChatMode from '@/app/components/ChatMode.';
 import Complete from '@/app/components/Complete';
 import FormMode from '@/app/components/FormMode';
+import Fetching from '@/app/components/Fetching';
 
 export default function Page() {
   const pageSelected = useSelector(
@@ -36,7 +37,11 @@ export default function Page() {
         </React.Fragment>
       );
     case CurrentPage.FETCHING:
-      return <React.Fragment>Fetching</React.Fragment>;
+      return (
+        <React.Fragment>
+          <Fetching />
+        </React.Fragment>
+      );
     case CurrentPage.SELECT_MODE:
       return (
         <React.Fragment>

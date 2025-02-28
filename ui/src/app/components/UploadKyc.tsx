@@ -1,12 +1,16 @@
+'use client';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { backendUrl } from '../../constants/creds';
+import { RootState } from '@/lib/store';
 
 export default function UploadKyc() {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentName, setDocumentName] = useState<string>('');
+
+  const otp = useSelector((state: RootState) => state.otpSelection);
 
   async function FetchDetails() {
     if (!selectedFile || !documentName) {
@@ -15,6 +19,7 @@ export default function UploadKyc() {
     }
 
     const formData = new FormData();
+    formData.append('mobile_number', otp.phone_number);
     formData.append('documentName', documentName);
     formData.append('file', selectedFile);
 
@@ -26,12 +31,11 @@ export default function UploadKyc() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response.data);
       if (response.status === 200) {
         dispatch({ type: 'pageSelection/setPage', payload: 'SELECT_MODE' });
       }
-    } catch (error) {
-      console.error('Error uploading file:', error);
+    } catch {
+      console.error('Error uploading file');
     }
   }
 

@@ -2,9 +2,35 @@
 import React from 'react';
 import { RootState } from '../../lib/store';
 import { useSelector } from 'react-redux';
+import { backendUrl } from '@/constants/creds';
+import axios from 'axios';
+
+type UserDetails = {
+  name: string;
+};
 
 export default function Complete() {
-  const userDetails = useSelector((state: RootState) => state.detailsSelection);
+  const [userDetails, setUserDetails] = React.useState<UserDetails | null>(
+    null
+  );
+
+  const otp = useSelector((state: RootState) => state.otpSelection);
+
+  React.useEffect(() => {
+    async function fetchPresentDetails() {
+      try {
+        const response = await axios.get(
+          `${backendUrl}/api/get-details/${otp.phone_number}`
+        );
+        if (response.status === 200) {
+          setUserDetails(response.data.name);
+        }
+      } catch {
+        console.log("Couldn't fetch details");
+      }
+    }
+    fetchPresentDetails();
+  }, []);
 
   return (
     <React.Fragment>
@@ -14,8 +40,8 @@ export default function Complete() {
         {userDetails && (
           <div className="bg-green-200 w-full lg:w-1/2 lg:p-4 lg:rounded-lg">
             <b>{userDetails.name}</b> will receive a link on their Whatsapp{' '}
-            <b>{userDetails.reference_contact}</b> to complete the registration
-            process. They can complete the further process by using that link
+            <b>{otp.phone_number}</b> to complete the registration process. They
+            can complete the further process by using that link
           </div>
         )}
       </div>

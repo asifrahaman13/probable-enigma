@@ -17,7 +17,6 @@ export default function Verification() {
         otp: otp.otp,
       });
       if (response.status === 200) {
-        console.log('OTP verified successfully');
         dispath({ type: 'pageSelection/setPage', payload: 'UPLOAD_KYC' });
       }
     } catch {

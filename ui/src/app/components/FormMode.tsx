@@ -1,9 +1,10 @@
 'use client';
 import axios from 'axios';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { backendUrl } from '../../constants/creds';
 import { UserDocument } from '../../types/documents';
+import { RootState } from '@/lib/store';
 
 export default function FormMode() {
   const dispath = useDispatch();
@@ -11,13 +12,14 @@ export default function FormMode() {
     null
   );
 
+  const otp = useSelector((state: RootState) => state.otpSelection);
+
   React.useEffect(() => {
     async function fetchPresentDetails() {
       try {
         const response = await axios.get(
-          `${backendUrl}/api/get-details/2280605800`
+          `${backendUrl}/api/get-details/${otp.phone_number}`
         );
-        console.log(response.data);
         if (response.status === 200) {
           setUserDetails(response.data);
         }
@@ -27,7 +29,7 @@ export default function FormMode() {
     }
 
     fetchPresentDetails();
-  }, []);
+  }, [otp.phone_number]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
