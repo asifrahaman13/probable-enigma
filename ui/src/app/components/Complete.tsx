@@ -4,12 +4,15 @@ import { RootState } from '../../lib/store';
 import { useSelector } from 'react-redux';
 import { backendUrl } from '@/constants/creds';
 import axios from 'axios';
+import Toast from './Toast';
+import { useToast } from '@/hooks/useToast';
 
 type UserDetails = {
   name: string;
 };
 
 export default function Complete() {
+  const { toast, showToast } = useToast();
   const [userDetails, setUserDetails] = React.useState<UserDetails | null>(
     null
   );
@@ -26,14 +29,16 @@ export default function Complete() {
           setUserDetails(response.data);
         }
       } catch {
-        console.log("Couldn't fetch details");
+        showToast('Error fetching details', 'error');
       }
     }
     fetchPresentDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp.phone_number]);
 
   return (
     <React.Fragment>
+      {toast && <Toast message={toast.message} type={toast.type} />}
       <div className="w-screen p-4 h-screen gap-4 flex flex-col justify-center items-center">
         <div className="text-xl font-semibold text-gray-900">CarePay</div>
         <div>Onboarding complete</div>

@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { backendUrl } from '../../constants/creds';
 import { RootState } from '@/lib/store';
+import { useToast } from '@/hooks/useToast';
+import Toast from './Toast';
 
 export default function UploadKyc() {
   const dispatch = useDispatch();
+  const { toast, showToast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentName, setDocumentName] = useState<string>('Aadhaar');
 
@@ -14,7 +17,7 @@ export default function UploadKyc() {
 
   async function FetchDetails() {
     if (!selectedFile || !documentName) {
-      alert('Please select a document name and file.');
+      showToast('Please select a document name and file.', 'error');
       return;
     }
 
@@ -35,7 +38,7 @@ export default function UploadKyc() {
         dispatch({ type: 'pageSelection/setPage', payload: 'SELECT_MODE' });
       }
     } catch {
-      console.error('Error uploading file');
+      showToast('Error uploading file', 'error');
     }
   }
 
@@ -53,6 +56,7 @@ export default function UploadKyc() {
 
   return (
     <React.Fragment>
+      {toast && <Toast message={toast.message} type={toast.type} />}
       <div className="flex flex-col justify-center h-screen items-center">
         <div className="shadow-xl flex flex-col gap-4 w-full lg:w-1/4 h-full lg:h-3/4 max-h-1/2 p-4 rounded-lg">
           <div className="w-full flex justify-center">

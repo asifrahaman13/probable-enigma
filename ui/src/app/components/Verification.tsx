@@ -4,9 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { backendUrl } from '../../constants/creds';
 import axios from 'axios';
 import { RootState } from '../../lib/store';
+import Toast from './Toast';
+import { useToast } from '../../hooks/useToast';
 
 export default function Verification() {
   const dispath = useDispatch();
+  const { toast, showToast } = useToast();
   const otp = useSelector((state: RootState) => state.otpSelection);
 
   async function Verify() {
@@ -17,14 +20,17 @@ export default function Verification() {
       });
       if (response.status === 200) {
         dispath({ type: 'pageSelection/setPage', payload: 'UPLOAD_KYC' });
+      } else {
+        showToast('Invalid OTP', 'error');
       }
     } catch {
-      console.log('Error in verifying OTP');
+      showToast('Invalid OTP', 'error');
     }
   }
 
   return (
     <React.Fragment>
+      {toast && <Toast message={toast.message} type={toast.type} />}
       <div className=" flex flex-col justify-center h-screen items-center">
         <div className="shadow-xl flex flex-col gap-4  w-full lg:w-1/4 h-full lg:h-3/4 max-h-1/2 p-4 rounded-lg">
           <div className="w-full flex justify-center">

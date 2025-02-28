@@ -4,9 +4,12 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { backendUrl } from '../../constants/creds';
 import { RootState } from '../../lib/store';
+import Toast from './Toast';
+import { useToast } from '../../hooks/useToast';
 
 export default function Otp() {
   const dispath = useDispatch();
+  const { toast, showToast } = useToast();
   const otp = useSelector((state: RootState) => state.otpSelection);
 
   async function SendOtp() {
@@ -19,7 +22,7 @@ export default function Otp() {
         dispath({ type: 'pageSelection/setPage', payload: 'VERIFICATION' });
       }
     } catch {
-      console.log('Error in sending OTP');
+      showToast('Error in sending OTP', 'error');
     }
   }
 
@@ -29,6 +32,7 @@ export default function Otp() {
 
   return (
     <React.Fragment>
+      {toast && <Toast message={toast.message} type={toast.type} />}
       <div className=" flex flex-col justify-center h-screen items-center">
         <div className="shadow-xl flex flex-col gap-4  w-full lg:w-1/4 h-full lg:h-3/4 max-h-1/2 p-4 rounded-lg">
           <div className="w-full flex justify-center">
