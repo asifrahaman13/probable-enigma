@@ -31,4 +31,5 @@ export const detailsSelectionSlice = createSlice({
 });
 
 export const { setDetails } = detailsSelectionSlice.actions;
+
 export default detailsSelectionSlice.reducer;

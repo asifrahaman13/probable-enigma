@@ -6,7 +6,7 @@ type OTP = {
 };
 
 const initialState: OTP = {
-  phone_number: '+91 8327562300',
+  phone_number: '',
   otp: '',
 };
 
@@ -21,4 +21,5 @@ export const otpSelectionSlice = createSlice({
 });
 
 export const { setOTP } = otpSelectionSlice.actions;
+
 export default otpSelectionSlice.reducer;

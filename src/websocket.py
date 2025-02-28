@@ -2,7 +2,7 @@ import asyncio
 import logging
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter
-from .config import anthropic_model
+from .instances import config
 from .ai import AI
 from .instances import database, websocket_manager
 
@@ -13,9 +13,9 @@ socket_router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket, room_name: str):
     await websocket_manager.connect(websocket, room_name)
     logging.info("Client connected")
-    data_present = await database.find("doucments", {"mobile_number": room_name})
+    data_present = await database.find("documents", {"mobile_number": room_name})
     ai_instance = AI(
-        model=anthropic_model,
+        model=config.anthropic_model,
         max_tokens=1000,
         already_present=str(data_present),
     )

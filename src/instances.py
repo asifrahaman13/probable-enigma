@@ -1,25 +1,18 @@
 from .ai import OCR
-from dotenv import load_dotenv
 from .database import MongoDB
 from .connection import ConnectionManager
 from .twilio_message import Twilio
-from .config import (
-    anthropic_model,
-    mongodb_uri,
-    account_sid,
-    auth_token,
-    from_number,
-    redis_host,
-    redis_port,
+from .config import Config
+
+
+config = Config.load_config()
+
+ocr = OCR(model=config.anthropic_model, max_tokens=1000)
+
+database = MongoDB(uri=config.mongodb_uri)
+
+websocket_manager = ConnectionManager(
+    redis_host=config.redis_host, redis_port=config.redis_port
 )
 
-load_dotenv()
-
-
-ocr = OCR(model=anthropic_model, max_tokens=1000)
-
-database = MongoDB(uri=mongodb_uri)
-
-websocket_manager = ConnectionManager(redis_host=redis_host, redis_port=redis_port)
-
-twilio = Twilio(account_sid, auth_token, from_number)
+twilio = Twilio(config.account_sid, config.auth_token, config.from_number)

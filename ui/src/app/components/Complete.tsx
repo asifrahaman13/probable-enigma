@@ -33,7 +33,7 @@ export default function Complete() {
       }
     }
     fetchPresentDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otp.phone_number]);
 
   return (
