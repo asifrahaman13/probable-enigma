@@ -23,14 +23,14 @@ export default function Complete() {
           `${backendUrl}/api/get-details/${otp.phone_number}`
         );
         if (response.status === 200) {
-          setUserDetails(response.data.name);
+          setUserDetails(response.data);
         }
       } catch {
         console.log("Couldn't fetch details");
       }
     }
     fetchPresentDetails();
-  }, []);
+  }, [otp.phone_number]);
 
   return (
     <React.Fragment>

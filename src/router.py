@@ -97,6 +97,8 @@ async def update_user_details(mobile_number: str, message: UserMessage):
 async def get_user_details(mobile_number: str):
     try:
         data = await database.find("documents", {"mobile_number": mobile_number})
+
+        print(data)
         for document in data:
             document["_id"] = str(document["_id"])
 
@@ -116,17 +118,5 @@ async def confirm_user_details(user_details: PersonalInfo):
         return JSONResponse(
             {"status": "success", "message": "Details verified successfully"}
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/confirmed-details/{mobile_number}")
-async def get_confirmed_user_details(mobile_number: str):
-    try:
-        data = await database.find("documents", {"mobile_number": mobile_number})
-        for document in data:
-            document["_id"] = str(document["_id"])
-
-        return data[0]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

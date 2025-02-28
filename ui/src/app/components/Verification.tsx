@@ -11,7 +11,6 @@ export default function Verification() {
 
   async function Verify() {
     try {
-      console.log(otp);
       const response = await axios.post(`${backendUrl}/api/verify-otp`, {
         phone_number: otp.phone_number,
         otp: otp.otp,

@@ -16,7 +16,6 @@ export default function Otp() {
       );
 
       if (response.status === 200) {
-        console.log('OTP sent successfully');
         dispath({ type: 'pageSelection/setPage', payload: 'VERIFICATION' });
       }
     } catch {

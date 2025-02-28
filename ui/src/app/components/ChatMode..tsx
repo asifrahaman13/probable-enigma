@@ -78,7 +78,6 @@ export default function ChatMode() {
       );
 
       if (response.status === 200) {
-        console.log(response.data.message);
         dispath({
           type: 'detailsSelection/setDetails',
           payload: response.data.message,
@@ -132,8 +131,7 @@ export default function ChatMode() {
         ) : (
           <div className="flex-shrink-0">
             <div className="border-1 flex">
-              <input
-                type="text"
+              <textarea
                 value={userMessage}
                 className="border flex-grow"
                 onChange={(e) => setUserMessage(e.target.value)}

@@ -1,10 +1,7 @@
 from twilio.rest import Client
-from dotenv import load_dotenv
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-
-load_dotenv()
 
 
 class Twilio:

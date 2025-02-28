@@ -199,7 +199,7 @@ export default function FormMode() {
         <div>
           <button
             onClick={confirm}
-            className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+            className="w-full px-3 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-700"
           >
             Confirm
           </button>

@@ -6,7 +6,7 @@ type OTP = {
 };
 
 const initialState: OTP = {
-  phone_number: '',
+  phone_number: '+91 8327562300',
   otp: '',
 };
 

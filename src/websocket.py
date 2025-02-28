@@ -20,6 +20,13 @@ async def websocket_endpoint(websocket: WebSocket, room_name: str):
         already_present=str(data_present),
     )
     try:
+        await websocket_manager.send_personal_message(
+            {
+                "message": "Hello there. Hope you are doing well. Lets see if there is any pending details I need from you.",
+                "finished": False,
+            },
+            websocket,
+        )
         while True:
             data = await websocket.receive_json()
             ai_instance.messages.append({"role": "user", "content": data["message"]})
