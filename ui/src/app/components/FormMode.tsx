@@ -7,10 +7,11 @@ import { UserDocument } from '../../types/documents';
 import { RootState } from '@/lib/store';
 
 export default function FormMode() {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const [userDetails, setUserDetails] = React.useState<UserDocument | null>(
     null
   );
+  const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
   const otp = useSelector((state: RootState) => state.otpSelection);
 
@@ -35,9 +36,35 @@ export default function FormMode() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     if (userDetails) {
+      const { name, value } = e.target;
       setUserDetails({
         ...userDetails,
-        [e.target.name]: e.target.value,
+        [name]: value,
+      });
+
+      let error = '';
+      if (
+        (name === 'mobile_number' || name === 'reference_contact') &&
+        !/^\+91 \d{10}$/.test(value)
+      ) {
+        error = 'Contact should be of the format: +yy xxxxxxxxxx';
+      } else if (
+        name === 'email_id' &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      ) {
+        error = 'Invalid email format';
+      } else if (name === 'pan' && value.length !== 10) {
+        error = 'PAN should be 10 characters long';
+      } else if (
+        name === 'date_of_birth' &&
+        !/^\d{4}-\d{2}-\d{2}$/.test(value)
+      ) {
+        error = 'Invalid date format';
+      }
+
+      setErrors({
+        ...errors,
+        [name]: error,
       });
     }
   };
@@ -57,7 +84,7 @@ export default function FormMode() {
         userDetails
       );
       if (response.status === 200) {
-        dispath({ type: 'pageSelection/setPage', payload: 'COMPLETE' });
+        dispatch({ type: 'pageSelection/setPage', payload: 'COMPLETE' });
       }
     } catch {
       console.log('something wrong');
@@ -65,8 +92,11 @@ export default function FormMode() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen h-screen bg-gray-100">
+      <div className="bg-white lg:p-6 p-4 rounded-lg shadow-lg overflow-y-scroll no-scrollbar w-full h-full lg:h-3/4 max-w-md">
+        <div className="w-full flex justify-center">
+          <div className="text-xl font-semibold text-gray-900">CarePay</div>
+        </div>
         <div className="mb-4">
           <label className="block text-gray-700">PAN:</label>
           <input
@@ -76,6 +106,7 @@ export default function FormMode() {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
+          {errors.pan && <p className="text-red-500 text-sm">{errors.pan}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Date of Birth:</label>
@@ -86,6 +117,9 @@ export default function FormMode() {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
+          {errors.date_of_birth && (
+            <p className="text-red-500 text-sm">{errors.date_of_birth}</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Gender:</label>
@@ -134,6 +168,9 @@ export default function FormMode() {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
+          {errors.email_id && (
+            <p className="text-red-500 text-sm">{errors.email_id}</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Education:</label>
@@ -185,6 +222,9 @@ export default function FormMode() {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
+          {errors.mobile_number && (
+            <p className="text-red-500 text-sm">{errors.mobile_number}</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Reference Contact:</label>
@@ -195,6 +235,9 @@ export default function FormMode() {
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
+          {errors.reference_contact && (
+            <p className="text-red-500 text-sm">{errors.reference_contact}</p>
+          )}
         </div>
         <div>
           <button

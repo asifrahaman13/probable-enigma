@@ -34,7 +34,7 @@ class OCR:
                 Please provide the following details from the vechicle image provided:
                 - pan
                 - name
-                - date_of_birth
+                - date_of_birth (yyyy-mm-dd)
                 - gender
                 - email_id
                 - reference_contact
@@ -70,7 +70,7 @@ class AI:
                 "content": f"""You are expert at extracting text. Now your task is to ask question from the user to get the required information:
                 - pan
                 - name
-                - date_of_birth
+                - date_of_birth (yyyy-mm-dd)
                 - gender
                 - email_id
                 - reference_contact
@@ -113,7 +113,7 @@ class AI:
                         response: 
                         - pan
                         - name
-                        - date_of_birth
+                        - date_of_birth (yyyy-mm-dd)
                         - gender
                         - email_id
                         - reference_contact

@@ -88,6 +88,13 @@ async def update_user_details(mobile_number: str, message: UserMessage):
             {"mobile_number": mobile_number},
             response.dict(exclude_none=True),
         )
+
+        # response=twilio.send_whatsapp_message(
+        #     mobile_number,
+        #     f"Your details are verified successfully: {mobile_number}",
+        # )
+        # if response is False:
+        #     raise HTTPException(status_code=500, detail="Failed to send message")
         return JSONResponse({"status": "success", "message": response.model_dump()})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -98,7 +105,6 @@ async def get_user_details(mobile_number: str):
     try:
         data = await database.find("documents", {"mobile_number": mobile_number})
 
-        print(data)
         for document in data:
             document["_id"] = str(document["_id"])
 
@@ -115,6 +121,12 @@ async def confirm_user_details(user_details: PersonalInfo):
             {"mobile_number": user_details.mobile_number},
             user_details.model_dump(),
         )
+        # response=twilio.send_whatsapp_message(
+        #     user_details.mobile_number,
+        #     f"Your details are verified successfully: {user_details.model_dump()}",
+        # )
+        # if response is False:
+        #     raise HTTPException(status_code=500, detail="Failed to send message")
         return JSONResponse(
             {"status": "success", "message": "Details verified successfully"}
         )

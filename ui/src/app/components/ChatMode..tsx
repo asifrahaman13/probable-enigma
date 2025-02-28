@@ -12,21 +12,18 @@ export default function ChatMode() {
   const [messages, setMessages] = useState<MessageState[]>([]);
   const [userMessage, setUserMessage] = useState<string>('');
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [isThinking, setIsThinking] = useState<boolean>(false);
 
   const otp = useSelector((state: RootState) => state.otpSelection);
 
   useEffect(() => {
     const webSocket = new WebSocket(`${backendSocket}/ws/${otp.phone_number}`);
-
     wsRef.current = webSocket;
-
     webSocket.onopen = () => console.log('Connected to WebSocket');
-
     webSocket.onmessage = (event) => {
       console.log('Message received:', event.data);
       try {
         const receivedMessage: MessageState = JSON.parse(event.data);
-
         if (receivedMessage.finished) {
           setIsFinished(true);
         }
@@ -34,13 +31,12 @@ export default function ChatMode() {
         receivedMessage.sender = 'AI';
 
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+        setIsThinking(false);
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
       }
     };
-
     webSocket.onerror = (error) => console.error('WebSocket error:', error);
-
     webSocket.onclose = () => {
       console.log('WebSocket closed');
     };
@@ -57,6 +53,7 @@ export default function ChatMode() {
       wsRef.current.send(JSON.stringify(message));
       setMessages((prevMessages) => [...prevMessages, message]);
       setUserMessage('');
+      setIsThinking(true);
     } else {
       console.error(
         'WebSocket is not open. ReadyState:',
@@ -96,21 +93,44 @@ export default function ChatMode() {
           <div className="text-xl font-semibold text-gray-900">CarePay</div>
         </div>
 
-        <div className="mt-4 flex-grow overflow-auto border p-2">
+        <div className="mt-4 flex-grow overflow-scroll no-scrollbar border p-2">
           {messages?.map((msg, index) => (
-            <div
-              key={index}
-              className={`p-2 ${
-                msg.sender === 'User'
-                  ? 'text-blue-600 bg-blue-50 text-end'
-                  : 'text-green-600'
-              }`}
-            >
-              <strong>{msg.sender}: </strong>
-              {msg.message}{' '}
-              <span className="text-gray-500 text-xs">({msg.timestamp})</span>
+            <div key={index} className="flex flex-col gap-4">
+              {msg.sender === 'AI' && (
+                <>
+                  <div className="p-2 w-4/5 bg-green-50 text-green-600">
+                    <strong>AI: </strong>
+                    <span
+                      dangerouslySetInnerHTML={{ __html: msg.message }}
+                      className="whitespace-pre-wrap"
+                    />
+                  </div>
+                  <span className="text-gray-500 text-xs self-start">
+                    ({msg.timestamp})
+                  </span>
+                </>
+              )}
+
+              {msg.sender === 'User' && (
+                <div className="p-2 flex flex-col items-end text-blue-600">
+                  <div className="max-w-4/5 px-2 bg-blue-50 flex justify-end items-center text-blue-600">
+                    <span
+                      dangerouslySetInnerHTML={{ __html: msg.message }}
+                      className="whitespace-pre-wrap"
+                    />
+                  </div>
+                  <span className="text-gray-500 text-xs">
+                    ({msg.timestamp})
+                  </span>
+                </div>
+              )}
             </div>
           ))}
+          {isThinking && (
+            <div className="p-2 text-gray-500 text-center">
+              AI is thinking...
+            </div>
+          )}
         </div>
 
         {isFinished ? (

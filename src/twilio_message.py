@@ -18,3 +18,15 @@ class Twilio:
         except Exception as e:
             logging.error(f"Failed to send message: {e}")
             return False
+
+    def send_whatsapp_message(self, to: str, message: str) -> bool:
+        try:
+            _ = self.client.messages.create(
+                body=message,
+                to="whatsapp:+918327562300",
+                from_="whatsapp:+14155238886",
+            )
+            return True
+        except Exception as e:
+            logging.error(f"Failed to send message: {e}")
+            return False

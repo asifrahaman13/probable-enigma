@@ -34,11 +34,11 @@ export default function Complete() {
 
   return (
     <React.Fragment>
-      <div className="w-screen h-screen gap-4 flex flex-col justify-center items-center">
+      <div className="w-screen p-4 h-screen gap-4 flex flex-col justify-center items-center">
         <div className="text-xl font-semibold text-gray-900">CarePay</div>
         <div>Onboarding complete</div>
         {userDetails && (
-          <div className="bg-green-200 w-full lg:w-1/2 lg:p-4 lg:rounded-lg">
+          <div className="bg-green-200 w-full lg:w-1/2 lg:p-4 rounded-lg p-2">
             <b>{userDetails.name}</b> will receive a link on their Whatsapp{' '}
             <b>{otp.phone_number}</b> to complete the registration process. They
             can complete the further process by using that link
