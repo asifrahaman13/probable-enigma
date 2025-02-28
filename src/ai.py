@@ -37,7 +37,11 @@ class OCR:
                 - date_of_birth (yyyy-mm-dd)
                 - gender
                 - email_id
-                - reference_contact
+                - reference_contact (+cc xxxxxxxxxx)
+
+                If the format given by the user is not correct then ask the user to provide the correct format or correct it yourself if possible.
+
+                If any information is not present mark it ask <UNKNOWN>
                 """,
             }
         )
@@ -73,12 +77,10 @@ class AI:
                 - date_of_birth (yyyy-mm-dd)
                 - gender
                 - email_id
-                - reference_contact
-
+                - reference_contact  (+cc xxxxxxxxxx)\n
                 Ask one question at a time and get the information from the user. If user has already answered the question, then skip that question and move on to the next one.
-
+                If the format given by the user is not correct then ask the user to provide the correct format or correct yourself if possible.\n
                 The information already present is as follows: {already_present}
-
                 When you have collected all the information then give a summary of the information collected and ask the user to confirm the information.
                 """,
             }
@@ -116,8 +118,9 @@ class AI:
                         - date_of_birth (yyyy-mm-dd)
                         - gender
                         - email_id
-                        - reference_contact
+                        - reference_contact  (+cc xxxxxxxxxx)\n
                         
+                        If the format given by the user is not correct then ask the user to provide the correct format or correct it yourself if possible.
                         """,
                     },
                     {"role": "user", "content": message},

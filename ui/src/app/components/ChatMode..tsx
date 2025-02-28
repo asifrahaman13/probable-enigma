@@ -113,7 +113,7 @@ export default function ChatMode() {
 
               {msg.sender === 'User' && (
                 <div className="p-2 flex flex-col items-end text-blue-600">
-                  <div className="max-w-4/5 px-2 bg-blue-50 flex justify-end items-center text-blue-600">
+                  <div className="max-w-4/5 text-end px-2 bg-blue-50 flex justify-end items-center text-blue-600">
                     <span
                       dangerouslySetInnerHTML={{ __html: msg.message }}
                       className="whitespace-pre-wrap"

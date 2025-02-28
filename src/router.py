@@ -35,10 +35,11 @@ async def send_otp(phone_number: str):
 @router.post("/verify-otp")
 async def verify_otp(otp: OTP):
     try:
-        data = await database.find(
-            "otp", {"phone_number": otp.phone_number, "otp": otp.otp}
-        )
+        print(otp.phone_number, otp.otp)
+        data = await database.find("otp", {"phone_number": otp.phone_number})
         if len(data) == 0:
+            raise HTTPException(status_code=400, detail="Invalid OTP")
+        if data[0]["otp"] != otp.otp:
             raise HTTPException(status_code=400, detail="Invalid OTP")
         await database.update(
             "otp",
@@ -49,6 +50,7 @@ async def verify_otp(otp: OTP):
             {"status": "success", "message": "OTP verified successfully"}
         )
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -89,12 +91,12 @@ async def update_user_details(mobile_number: str, message: UserMessage):
             response.dict(exclude_none=True),
         )
 
-        # response=twilio.send_whatsapp_message(
-        #     mobile_number,
-        #     f"Your details are verified successfully: {mobile_number}",
-        # )
-        # if response is False:
-        #     raise HTTPException(status_code=500, detail="Failed to send message")
+        response = twilio.send_whatsapp_message(
+            mobile_number,
+            f"Your details are verified successfully: {mobile_number}",
+        )
+        if response is False:
+            raise HTTPException(status_code=500, detail="Failed to send message")
         return JSONResponse({"status": "success", "message": response.model_dump()})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -121,12 +123,12 @@ async def confirm_user_details(user_details: PersonalInfo):
             {"mobile_number": user_details.mobile_number},
             user_details.model_dump(),
         )
-        # response=twilio.send_whatsapp_message(
-        #     user_details.mobile_number,
-        #     f"Your details are verified successfully: {user_details.model_dump()}",
-        # )
-        # if response is False:
-        #     raise HTTPException(status_code=500, detail="Failed to send message")
+        response = twilio.send_whatsapp_message(
+            user_details.mobile_number,
+            f"Your details are verified successfully: {user_details.model_dump()}",
+        )
+        if response is False:
+            raise HTTPException(status_code=500, detail="Failed to send message")
         return JSONResponse(
             {"status": "success", "message": "Details verified successfully"}
         )

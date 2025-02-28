@@ -8,7 +8,7 @@ import { RootState } from '@/lib/store';
 export default function UploadKyc() {
   const dispatch = useDispatch();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documentName, setDocumentName] = useState<string>('');
+  const [documentName, setDocumentName] = useState<string>('Aadhaar');
 
   const otp = useSelector((state: RootState) => state.otpSelection);
 

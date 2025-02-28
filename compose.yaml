@@ -9,6 +9,15 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6380:6379"
+    networks:
+      - my-network
+    volumes:
+      - redis_data:/data
+
   backend:
     build:
       context: .          
@@ -23,15 +32,9 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
     env_file:
       - .env
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6380:6379"
-    networks:
-      - my-network
-    volumes:
-      - redis_data:/data
+    depends_on:
+      - mongodb
+      - redis
 
   ui:
     build:
