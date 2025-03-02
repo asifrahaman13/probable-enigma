@@ -5,7 +5,7 @@ from .instances import ocr, database, twilio
 from .ai import AI
 import logging
 from .model import UserMessage, PersonalInfo, OTP
-from .helper import generate_6_digit_code
+from .helper import generate_6_digit_code, dict_to_text
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -90,12 +90,12 @@ async def update_user_details(mobile_number: str, message: UserMessage):
             {"mobile_number": mobile_number},
             response.dict(exclude_none=True),
         )
-
-        response = twilio.send_whatsapp_message(
+        text_data = dict_to_text(response.model_dump())
+        result = twilio.send_whatsapp_message(
             mobile_number,
-            f"Your details are verified successfully: {mobile_number}",
+            f"Your details are verified successfully:\n {text_data}",
         )
-        if response is False:
+        if result is False:
             raise HTTPException(status_code=500, detail="Failed to send message")
         return JSONResponse({"status": "success", "message": response.model_dump()})
     except Exception as e:
@@ -123,9 +123,10 @@ async def confirm_user_details(user_details: PersonalInfo):
             {"mobile_number": user_details.mobile_number},
             user_details.model_dump(),
         )
+        text_data = dict_to_text(user_details.model_dump())
         response = twilio.send_whatsapp_message(
             user_details.mobile_number,
-            f"Your details are verified successfully: {user_details.model_dump()}",
+            f"Your details are verified successfully: \n{text_data}",
         )
         if response is False:
             raise HTTPException(status_code=500, detail="Failed to send message")

@@ -136,7 +136,7 @@ export default function FormMode() {
                   type="radio"
                   name="gender"
                   value="male"
-                  checked={userDetails?.gender === 'male'}
+                  checked={userDetails?.gender === 'Male'}
                   onChange={handleChange}
                   className="mr-2"
                 />
@@ -147,7 +147,7 @@ export default function FormMode() {
                   type="radio"
                   name="gender"
                   value="female"
-                  checked={userDetails?.gender === 'female'}
+                  checked={userDetails?.gender === 'Female'}
                   onChange={handleChange}
                   className="mr-2"
                 />
@@ -158,7 +158,7 @@ export default function FormMode() {
                   type="radio"
                   name="gender"
                   value="other"
-                  checked={userDetails?.gender === 'other'}
+                  checked={userDetails?.gender === 'Other'}
                   onChange={handleChange}
                   className="mr-2"
                 />
