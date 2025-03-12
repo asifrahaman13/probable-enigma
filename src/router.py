@@ -5,7 +5,7 @@ from .instances import ocr, database, twilio
 from .ai import AI
 import logging
 from .model import UserMessage, PersonalInfo, OTP
-from .helper import generate_6_digit_code, dict_to_text
+from .helper import generate_6_digit_code, dict_to_text, ocr_image
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -35,7 +35,6 @@ async def send_otp(phone_number: str):
 @router.post("/verify-otp")
 async def verify_otp(otp: OTP):
     try:
-        print(otp.phone_number, otp.otp)
         data = await database.find("otp", {"phone_number": otp.phone_number})
         if len(data) == 0:
             raise HTTPException(status_code=400, detail="Invalid OTP")
@@ -50,7 +49,6 @@ async def verify_otp(otp: OTP):
             {"status": "success", "message": "OTP verified successfully"}
         )
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -63,7 +61,10 @@ async def upload(
     try:
         file_content = await file.read()
         encoded_file = base64.b64encode(file_content).decode("utf-8")
-        extracted_information = await ocr.ocr_image(encoded_file)
+
+        image_content = ocr_image(encoded_file)
+        logging.info(f"The content extracted is : {image_content}")
+        extracted_information = await ocr.ocr_image(encoded_file, image_content)
         extracted_information["mobile_number"] = mobile_number
 
         logging.info(extracted_information)

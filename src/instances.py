@@ -7,7 +7,7 @@ from .config import Config
 
 config = Config.load_config()
 
-ocr = OCR(model=config.anthropic_model, max_tokens=1000)
+ocr = OCR(model=config.anthropic_model, max_tokens=3500)
 
 database = MongoDB(uri=config.mongodb_uri)
 

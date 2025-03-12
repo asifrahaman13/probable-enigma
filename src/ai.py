@@ -14,7 +14,7 @@ class OCR:
         self.max_tokens = max_tokens
         self.async_client_json = instructor.from_anthropic(AsyncAnthropicBedrock())
 
-    async def ocr_image(self, base_64_image: str) -> Awaitable[str]:
+    async def ocr_image(self, base_64_image: str, image_content: str) -> Awaitable[str]:
         content = [
             {
                 "type": "image",
@@ -29,38 +29,37 @@ class OCR:
         content.append(
             {
                 "type": "text",
-                "text": """You are an expert in detecting the information out of the image. \n
+                "text": f"""You are an expert in detecting the information out of the image. \n
                 
                 Please provide the following details from the vechicle image provided:
                 - pan
                 - name
                 - date_of_birth (yyyy-mm-dd)
-                - gender
+                - gender (Male, Female, Other)
                 - email_id
                 - reference_contact (+cc xxxxxxxxxx)
 
                 If the format given by the user is not correct then ask the user to provide the correct format or correct it yourself if possible.
 
-                If any information is not present mark it ask <UNKNOWN>
+                If any information is not present mark it ask <UNKNOWN>.
+
+                The text information present for more clarity from the image is:
+                {image_content}
                 """,
             }
         )
         messages = [{"role": "user", "content": content}]
-        try:
-            (
-                _,
-                response,
-            ) = await self.async_client_json.messages.create_with_completion(
-                model=self.model,
-                max_tokens=self.max_tokens,
-                messages=messages,
-                response_model=PersonalInfo,
-            )
-
-            logging.info(f"Response from the bedrock API: {response}")
-            return response.content[0].input
-        except Exception as e:
-            raise e
+        (
+            _,
+            response,
+        ) = await self.async_client_json.messages.create_with_completion(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            messages=messages,
+            response_model=PersonalInfo,
+        )
+        logging.info(f"Response from the bedrock API: {response}")
+        return response.content[0].input
 
 
 class AI:
@@ -75,7 +74,7 @@ class AI:
                 - pan
                 - name
                 - date_of_birth (yyyy-mm-dd)
-                - gender
+                - gender (Male, Female, Other)
                 - email_id
                 - reference_contact  (+cc xxxxxxxxxx)\n
                 Ask one question at a time and get the information from the user. If user has already answered the question, then skip that question and move on to the next one.
@@ -87,47 +86,41 @@ class AI:
         ]
 
     async def get_response(self) -> Awaitable[str]:
-        try:
-            response = await self.async_client.messages.create(
-                model=self.model,
-                max_tokens=self.max_tokens,
-                messages=self.messages,
-                response_model=AIResponse,
-            )
+        response = await self.async_client.messages.create(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            messages=self.messages,
+            response_model=AIResponse,
+        )
 
-            logging.info(f"Response from the bedrock API: {response}")
-            return response.message, response.finished
-        except Exception as e:
-            raise e
+        logging.info(f"Response from the bedrock API: {response}")
+        return response.message, response.finished
 
     @staticmethod
     async def extract_details(message: str) -> Awaitable[PersonalInfo]:
-        try:
-            response = await instructor.from_anthropic(
-                AsyncAnthropicBedrock()
-            ).messages.create(
-                model="anthropic.claude-3-5-sonnet-20240620-v1:0",
-                max_tokens=1000,
-                messages=[
-                    {
-                        "role": "assistant",
-                        "content": """Your job is to extract out the deetails fromt the information provided by the user. Extract the following information and only give the json 
+        response = await instructor.from_anthropic(
+            AsyncAnthropicBedrock()
+        ).messages.create(
+            model="anthropic.claude-3-5-sonnet-20240620-v1:0",
+            max_tokens=3500,
+            messages=[
+                {
+                    "role": "assistant",
+                    "content": """Your job is to extract out the deetails from the information provided by the user. Extract the following information and only give the json 
                         response: 
                         - pan
                         - name
                         - date_of_birth (yyyy-mm-dd)
-                        - gender
+                        - gender (Male, Female, Other)
                         - email_id
                         - reference_contact  (+cc xxxxxxxxxx)\n
                         
                         If the format given by the user is not correct then ask the user to provide the correct format or correct it yourself if possible.
                         """,
-                    },
-                    {"role": "user", "content": message},
-                ],
-                response_model=PersonalInfo,
-            )
-            logging.info(f"Response from the bedrock API: {response}")
-            return response
-        except Exception as e:
-            raise e
+                },
+                {"role": "user", "content": message},
+            ],
+            response_model=PersonalInfo,
+        )
+        logging.info(f"Response from the bedrock API: {response}")
+        return response

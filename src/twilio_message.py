@@ -10,23 +10,15 @@ class Twilio:
         self.from_number = from_number
 
     def send_message(self, to: str, verification_code: str) -> bool:
-        try:
-            _ = self.client.messages.create(
-                body=f"Your OTP is {verification_code}", to=to, from_=self.from_number
-            )
-            return True
-        except Exception as e:
-            logging.error(f"Failed to send message: {e}")
-            return False
+        _ = self.client.messages.create(
+            body=f"Your OTP is {verification_code}", to=to, from_=self.from_number
+        )
+        return True
 
     def send_whatsapp_message(self, to: str, message: str) -> bool:
-        try:
-            _ = self.client.messages.create(
-                body=message,
-                to="whatsapp:+918327562300",
-                from_="whatsapp:+14155238886",
-            )
-            return True
-        except Exception as e:
-            logging.error(f"Failed to send message: {e}")
-            return False
+        _ = self.client.messages.create(
+            body=message,
+            to="whatsapp:+918327562300",
+            from_="whatsapp:+14155238886",
+        )
+        return True

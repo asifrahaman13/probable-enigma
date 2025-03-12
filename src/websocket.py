@@ -16,7 +16,7 @@ async def websocket_endpoint(websocket: WebSocket, room_name: str):
     data_present = await database.find("documents", {"mobile_number": room_name})
     ai_instance = AI(
         model=config.anthropic_model,
-        max_tokens=1000,
+        max_tokens=3500,
         already_present=str(data_present),
     )
     try:
