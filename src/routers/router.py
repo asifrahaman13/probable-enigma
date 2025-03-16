@@ -1,7 +1,7 @@
 import base64
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
-from ..instances import ocr, database, twilio
+from ..exports.instances import ocr, database, twilio
 from ..repo.ai import AI
 import logging
 from ..models.model import UserMessage, PersonalInfo, OTP

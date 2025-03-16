@@ -2,9 +2,9 @@ import asyncio
 import logging
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter
-from ..instances import config
+from ..exports.instances import config
 from ..repo.ai import AI
-from ..instances import database, websocket_manager
+from ..exports.instances import database, websocket_manager
 
 socket_router = APIRouter()
 
