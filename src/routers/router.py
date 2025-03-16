@@ -1,11 +1,11 @@
 import base64
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
-from .instances import ocr, database, twilio
-from .ai import AI
+from ..instances import ocr, database, twilio
+from ..repo.ai import AI
 import logging
-from .model import UserMessage, PersonalInfo, OTP
-from .helper import generate_6_digit_code, dict_to_text, ocr_image
+from ..models.model import UserMessage, PersonalInfo, OTP
+from ..helper.helper import generate_6_digit_code, dict_to_text, ocr_image
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")

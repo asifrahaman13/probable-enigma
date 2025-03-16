@@ -1,8 +1,8 @@
-from .ai import OCR
-from .database import MongoDB
-from .connection import ConnectionManager
-from .twilio_message import Twilio
-from .config import Config
+from .repo.ai import OCR
+from .repo.database import MongoDB
+from .connection.connection import ConnectionManager
+from .repo.twilio_message import Twilio
+from .config.config import Config
 
 
 config = Config.load_config()
